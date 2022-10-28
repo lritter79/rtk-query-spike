@@ -1,8 +1,7 @@
 import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { createPost, selectPostsLoading } from "./forumSlice";
-
+import { useCreatePostMutation } from "../ForumPosts/forumService";
 type Title = string;
 type Body = string;
 
@@ -15,13 +14,13 @@ type Post = {
 const PostForm = () => {
   const { register, handleSubmit, reset } = useForm<Post>();
 
-  const loadingStatus = useAppSelector(selectPostsLoading);
-
+  const [createPost, result] = useCreatePostMutation();
   const dispatch = useAppDispatch();
   const onSubmit = async (data: Post) => {
     console.log("submitted");
     console.log(data);
-    dispatch(createPost({ userId: 1, body: data.body, title: data.title }));
+    let post = await createPost({ ...data, userId: 1 }).unwrap();
+    console.log(post);
     reset();
   };
   return (
@@ -38,7 +37,7 @@ const PostForm = () => {
         </label>
         <br />
 
-        <button disabled={loadingStatus === "loading"}>Send</button>
+        <button disabled={result.isLoading}>Send</button>
       </form>
     </div>
   );

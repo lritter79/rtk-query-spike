@@ -1,11 +1,10 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
 import counterReducer from "../features/counter/counterSlice";
-import postsReducer from "../features/ForumPosts/forumSlice";
-
+import { postApi } from "../features/ForumPosts/forumService";
 export const store = configureStore({
   reducer: {
     counter: counterReducer,
-    posts: postsReducer,
+    [postApi.reducerPath]: postApi.reducer,
   },
 });
 

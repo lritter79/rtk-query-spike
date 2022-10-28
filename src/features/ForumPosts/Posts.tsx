@@ -1,29 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { getPosts, selectPosts, selectPostsLoading } from "./forumSlice";
+import { useGetPostsQuery } from "./forumService";
 import PostComponent from "./Post";
 import PostForm from "./PostForm";
 
 const Posts: React.FunctionComponent = () => {
   // Similar to componentDidMount and componentDidUpdate:
-  const posts = useAppSelector(selectPosts);
-  const loadingStatus = useAppSelector(selectPostsLoading);
+  const { data: posts = [], error, isLoading, isSuccess } = useGetPostsQuery();
 
-  const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(getPosts(1));
-  }, []);
   return (
     <div>
       <div>
         <PostForm />
       </div>
       Posts
-      {loadingStatus === "loading" ? (
+      {isLoading ? (
         <p>Loading...</p>
       ) : (
         <div>
-          {posts.map((value) => {
+          {posts?.map((value) => {
             return <PostComponent post={value} />;
           })}
         </div>
